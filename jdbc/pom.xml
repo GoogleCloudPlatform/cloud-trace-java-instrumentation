@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>com.google.cloud.trace</groupId>
+    <artifactId>instrumentation</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  
+  <artifactId>jdbc</artifactId>
+  <packaging>pom</packaging>
+  
+  <name>Google Cloud Trace for JDBC - parent</name>
+  <description>
+    Google Cloud Trace for JDBC is a custom JDBC driver which intercepts calls
+    to the actual JDBC driver (e.g. Cloud SQL's) and collects and sends latency
+    data about JDBC calls to Stackdriver Trace for visualization in the Google
+    Cloud Console.
+  </description>
+  <url>https://github.com/GoogleCloudPlatform/cloud-trace-java-instrumentation/jdbc</url>
+
+  <modules>
+    <module>driver</module>
+    <module>driver-appengine-standard</module>
+    <module>driver-common</module>
+    <module>example-computeengine</module>
+    <module>example-appengine-standard</module>
+  </modules>
+  
+</project>

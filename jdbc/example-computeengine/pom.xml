@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+            
+  <parent>
+    <groupId>com.google.cloud.trace</groupId>
+    <artifactId>jdbc</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  
+  <groupId>com.google.cloud.trace.jdbc</groupId>
+  <artifactId>example-computeengine</artifactId>
+  
+  <name>Google Cloud Trace for JDBC - example for Google Compute Engine</name>
+  
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+  
+  <dependencies>
+    <!-- Compile/runtime dependencies -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>driver</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.trace</groupId>
+      <artifactId>core</artifactId>
+      <version>${cloud.trace.sdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.trace.v1</groupId>
+      <artifactId>grpc-consumer</artifactId>
+      <version>${cloud.trace.sdk.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.trace</groupId>
+      <artifactId>implementation</artifactId>
+      <version>${cloud.trace.sdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.trace</groupId>
+      <artifactId>java-timestamp</artifactId>
+      <version>${cloud.trace.sdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.trace</groupId>
+      <artifactId>sink</artifactId>
+      <version>${cloud.trace.sdk.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.trace.v1</groupId>
+      <artifactId>sink</artifactId>
+      <version>${cloud.trace.sdk.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>com.google.auth</groupId>
+      <artifactId>google-auth-library-oauth2-http</artifactId>
+      <version>0.4.0</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava-jdk5</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.sql</groupId>
+      <artifactId>mysql-socket-factory</artifactId>
+      <version>1.0.2</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava-jdk5</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>20.0</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-tcnative-boringssl-static</artifactId>
+      <version>1.1.33.Fork23</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.1.40</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.5.0</version>
+        <configuration>
+          <mainClass>com.google.cloud.trace.jdbc.example.gce.Main</mainClass>
+          <arguments>
+            <!-- TODO: Enter Google Cloud project ID. -->
+            <argument>google.com:stschmidt-cloud-trace</argument>
+          </arguments>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
