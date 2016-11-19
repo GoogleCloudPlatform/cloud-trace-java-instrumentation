@@ -18,7 +18,7 @@ Console](src/site/resources/images/example-trace-details.png)
 
 ## Supported platforms
 
-To use *Google Cloud Trace for JDBC*, you must have an Java application that
+To use *Google Cloud Trace for JDBC*, you must have a Java application that
 you'd like to trace. The application can be on [Google Cloud
 Platform](https://cloud.google.com/), on-premise, or another cloud platform.
 
