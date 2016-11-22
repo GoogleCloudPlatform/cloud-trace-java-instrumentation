@@ -7,7 +7,7 @@
   <prerequisites>
     <maven>3.3</maven>
   </prerequisites>
-  
+
   <groupId>com.google.cloud.trace.instrumentation</groupId>
   <artifactId>root</artifactId>
   <version>1.0-SNAPSHOT</version>
@@ -38,22 +38,33 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- The version of Cloud Trace SDK for Java that is used throughout the
-         provided libraries. -->
+    <!-- The version of Cloud Trace SDK for Java that -->
+    <!-- is used throughout the provided libraries. -->
     <cloud.trace.sdk.version>0.1.1-SNAPSHOT</cloud.trace.sdk.version>
   </properties>
-  
+
   <modules>
     <module>jdbc</module>
   </modules>
 
+  <scm>
+    <url>https://github.com/GoogleCloudPlatform/cloud-trace-java-instrumentation</url>
+    <connection>scm:git:https://github.com/GoogleCloudPlatform/cloud-trace-java-instrumentation.git</connection>
+    <developerConnection>scm:git:https://github.com/GoogleCloudPlatform/cloud-trace-java-instrumentation.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+
   <distributionManagement>
-    <site>
-      <id>a</id>
-      <url>http://example.com/</url>
-    </site>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+    </repository>
   </distributionManagement>
-  
+
   <build>
     <pluginManagement>
       <plugins>
@@ -122,5 +133,63 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.0.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.4</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>release-sign-artifacts</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.6</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
