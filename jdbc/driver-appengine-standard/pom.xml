@@ -131,6 +131,10 @@
         </executions>
         <configuration>
           <options>
+            <option>-keep class com.google.cloud.trace.jdbc.Driver</option>
+            <option>-keep class * extends com.google.cloud.trace.jdbc.TraceService</option>
+            <option>-dontobfuscate</option>
+            <option>-dontoptimize</option>
             <option>-dontnote com.google.appengine.**</option>
             <option>-dontnote com.google.auto.common.*</option>
             <option>-dontnote com.google.cloud.trace.jdbc.*</option>
@@ -139,10 +143,6 @@
             <option>-dontwarn com.google.errorprone.annotations.**</option>
             <option>-dontwarn com.google.j2objc.annotations.**</option>
             <option>-dontwarn org.codehaus.mojo.animal_sniffer.**</option>
-            <option>-dontobfuscate</option>
-            <option>-keep class * extends com.google.cloud.trace.jdbc.TraceService</option>
-            <option>-keep class * implements java.sql.Driver</option>
-            <option>-whyareyoukeeping class com.google.cloud.trace.jdbc.repackaged.com.google.common.base.ExtraObjectsMethodsForWeb</option>
           </options>
           <libs>
             <lib>${java.home}/lib/rt.jar</lib>
