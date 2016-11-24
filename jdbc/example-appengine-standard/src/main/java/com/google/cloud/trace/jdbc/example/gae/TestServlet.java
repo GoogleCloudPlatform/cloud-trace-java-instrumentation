@@ -14,8 +14,6 @@
 
 package com.google.cloud.trace.jdbc.example.gae;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -45,9 +43,6 @@ public class TestServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    checkNotNull(request);
-    checkNotNull(response);
-    
     response.setContentType("text/html");
     response.setCharacterEncoding("UTF-8");
 
