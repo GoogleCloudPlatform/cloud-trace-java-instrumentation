@@ -46,6 +46,7 @@
   <modules>
     <module>jdbc</module>
     <module>apache-http</module>
+    <module>mongodb</module>
   </modules>
 
   <scm>
