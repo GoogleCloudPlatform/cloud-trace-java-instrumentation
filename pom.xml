@@ -40,11 +40,12 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- The version of Cloud Trace SDK for Java that -->
     <!-- is used throughout the provided libraries. -->
-    <cloud.trace.sdk.version>0.1.1-SNAPSHOT</cloud.trace.sdk.version>
+    <cloud.trace.sdk.version>0.2.1-SNAPSHOT</cloud.trace.sdk.version>
   </properties>
 
   <modules>
     <module>jdbc</module>
+    <module>apache-http</module>
   </modules>
 
   <scm>
