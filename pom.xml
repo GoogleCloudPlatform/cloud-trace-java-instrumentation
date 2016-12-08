@@ -44,8 +44,9 @@
   </properties>
 
   <modules>
-    <module>jdbc</module>
     <module>apache-http</module>
+    <module>core-http</module>
+    <module>jdbc</module>
     <module>mongodb</module>
   </modules>
 

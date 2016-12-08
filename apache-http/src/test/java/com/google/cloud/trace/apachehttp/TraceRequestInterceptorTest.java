@@ -15,11 +15,21 @@
 package com.google.cloud.trace.apachehttp;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import com.google.cloud.trace.TestTracer;
-import com.google.cloud.trace.TestTracer.AnnotateEvent;
-import com.google.cloud.trace.TestTracer.StartSpanEvent;
-import com.google.cloud.trace.core.Label;
+import com.google.cloud.trace.TestSpanContextHandle;
+import com.google.cloud.trace.core.SpanContext;
+import com.google.cloud.trace.core.SpanId;
+import com.google.cloud.trace.core.TraceContext;
+import com.google.cloud.trace.core.TraceId;
+import com.google.cloud.trace.core.TraceOptions;
+import com.google.cloud.trace.http.TraceHttpRequestInterceptor;
+import com.google.cloud.trace.http.HttpRequest;
+import java.math.BigInteger;
+import java.net.URI;
 import org.apache.http.HttpHeaders;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.client.methods.HttpGet;
@@ -29,65 +39,42 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.ArgumentCaptor;
 
 @RunWith(JUnit4.class)
 public class TraceRequestInterceptorTest {
-  private HttpGet requestWithNoHeaders;
   private HttpGet requestWithHeaders;
 
-  private TestTracer tracer;
   private TraceRequestInterceptor requestInterceptor;
+  private TraceHttpRequestInterceptor mockDelegate;
+  private TraceContext testContext = new TraceContext(
+      new TestSpanContextHandle(new SpanContext(new TraceId(
+          BigInteger.TEN), new SpanId(22), TraceOptions.forTraceEnabled())));
 
   @Before
   public void setup() {
-    requestWithNoHeaders = new HttpGet("http://example.com/");
-
     requestWithHeaders = new HttpGet("http://example.com/foo/bar");
     requestWithHeaders.setHeader(HttpHeaders.USER_AGENT, "test-user-agent");
     requestWithHeaders.setProtocolVersion(new ProtocolVersion("HTTP", 2, 0));
     requestWithHeaders.setHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(123456));
 
-    tracer = new TestTracer();
-    requestInterceptor = new TraceRequestInterceptor(tracer);
+    mockDelegate = mock(TraceHttpRequestInterceptor.class);
+    when(mockDelegate.process(any(HttpRequest.class))).thenReturn(testContext);
+    requestInterceptor = new TraceRequestInterceptor(mockDelegate);
   }
 
   @Test
-  public void testProcess_WithNoHeaders() throws Exception {
-    HttpContext context = new BasicHttpContext();
-    requestInterceptor.process(requestWithNoHeaders, context);
-
-    assertThat(tracer.startSpanEvents).hasSize(1);
-    StartSpanEvent startEvent = tracer.startSpanEvents.get(0);
-    assertThat(startEvent.getName()).isEqualTo("http://example.com/");
-    assertThat(context.getAttribute("TRACE-CONTEXT")).isEqualTo(startEvent.getTraceContext());
-
-    assertThat(tracer.annotateEvents).hasSize(1);
-    AnnotateEvent annotateEvent = tracer.annotateEvents.get(0);
-    assertThat(annotateEvent.getLabels().getLabels()).containsAllOf(
-        new Label("/http/method", "GET"),
-        new Label("/http/client_protocol", "HTTP")
-    );
-    assertThat(annotateEvent.getTraceContext()).isEqualTo(startEvent.getTraceContext());
-  }
-
-  @Test
-  public void testProcess_WithHeaders() throws Exception {
+  public void testProcess() throws Exception {
     HttpContext context = new BasicHttpContext();
     requestInterceptor.process(requestWithHeaders, context);
+    assertThat(context.getAttribute("TRACE-CONTEXT")).isEqualTo(testContext);
 
-    assertThat(tracer.startSpanEvents).hasSize(1);
-    StartSpanEvent startEvent = tracer.startSpanEvents.get(0);
-    assertThat(startEvent.getName()).isEqualTo("http://example.com/foo/bar");
-    assertThat(context.getAttribute("TRACE-CONTEXT")).isEqualTo(startEvent.getTraceContext());
-
-    assertThat(tracer.annotateEvents).hasSize(1);
-    AnnotateEvent annotateEvent = tracer.annotateEvents.get(0);
-    assertThat(annotateEvent.getLabels().getLabels()).containsAllOf(
-        new Label("/http/user_agent", "test-user-agent"),
-        new Label("/request/size", "123456"),
-        new Label("/http/method", "GET"),
-        new Label("/http/client_protocol", "HTTP")
-    );
-    assertThat(annotateEvent.getTraceContext()).isEqualTo(startEvent.getTraceContext());
+    ArgumentCaptor<HttpRequest> captor = ArgumentCaptor.forClass(HttpRequest.class);
+    verify(mockDelegate).process(captor.capture());
+    HttpRequest request = captor.getValue();
+    assertThat(request.getMethod()).isEqualTo("GET");
+    assertThat(request.getProtocol()).isEqualTo("HTTP");
+    assertThat(request.getURI()).isEqualTo(URI.create("http://example.com/foo/bar"));
+    assertThat(request.getHeader("User-Agent")).isEqualTo("test-user-agent");
   }
 }

@@ -14,14 +14,12 @@
 
 package com.google.cloud.trace.apachehttp;
 
-import com.google.cloud.trace.Trace;
-import com.google.cloud.trace.Tracer;
-import com.google.cloud.trace.core.Labels;
 import com.google.cloud.trace.core.TraceContext;
+import com.google.cloud.trace.http.TraceHttpResponseInterceptor;
+import com.google.cloud.trace.http.HttpResponse;
 import java.io.IOException;
+import org.apache.http.Header;
 import org.apache.http.HttpException;
-import org.apache.http.HttpHeaders;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.protocol.HttpContext;
 
@@ -31,29 +29,40 @@ import org.apache.http.protocol.HttpContext;
  */
 public class TraceResponseInterceptor implements HttpResponseInterceptor {
 
-  private final Tracer tracer;
+  private final TraceHttpResponseInterceptor interceptor;
 
   public TraceResponseInterceptor() {
-    this(Trace.getTracer());
+    this(new TraceHttpResponseInterceptor());
   }
 
-  public TraceResponseInterceptor(Tracer tracer) {
-    this.tracer = tracer;
+  public TraceResponseInterceptor(TraceHttpResponseInterceptor interceptor) {
+    this.interceptor = interceptor;
   }
 
-  public void process(HttpResponse response, HttpContext context)
+  public void process(org.apache.http.HttpResponse response, HttpContext context)
       throws HttpException, IOException {
     TraceContext traceContext = (TraceContext) context
         .getAttribute(TraceInterceptorUtil.TRACE_CONTEXT_KEY);
-    if (traceContext == null) {
-      return;
+    interceptor.process(new ResponseAdapter(response), traceContext);
+  }
+
+  private static class ResponseAdapter implements HttpResponse {
+    private final org.apache.http.HttpResponse response;
+
+    private ResponseAdapter(org.apache.http.HttpResponse response) {
+      this.response = response;
     }
-    Labels.Builder labels = Labels.builder();
-    TraceInterceptorUtil.annotateFromHeader(labels, HttpLabels.RESPONSE_SIZE,
-        response.getFirstHeader(HttpHeaders.CONTENT_LENGTH));
-    labels.add(HttpLabels.HTTP_STATUS_CODE,
-        Integer.toString(response.getStatusLine().getStatusCode()));
-    tracer.annotateSpan(traceContext, labels.build());
-    tracer.endSpan(traceContext);
+
+    public String getHeader(String name) {
+      Header header = response.getFirstHeader(name);
+      if (header == null) {
+        return null;
+      }
+      return header.getValue();
+    }
+
+    public int getStatus() {
+      return response.getStatusLine().getStatusCode();
+    }
   }
 }

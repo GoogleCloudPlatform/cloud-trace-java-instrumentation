@@ -14,15 +14,14 @@
 
 package com.google.cloud.trace.apachehttp;
 
-import com.google.cloud.trace.Trace;
-import com.google.cloud.trace.Tracer;
-import com.google.cloud.trace.core.Labels;
 import com.google.cloud.trace.core.SpanContextFactory;
 import com.google.cloud.trace.core.TraceContext;
+import com.google.cloud.trace.http.HttpRequest;
+import com.google.cloud.trace.http.TraceHttpRequestInterceptor;
 import java.io.IOException;
+import java.net.URI;
+import org.apache.http.Header;
 import org.apache.http.HttpException;
-import org.apache.http.HttpHeaders;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.protocol.HttpContext;
 
@@ -32,34 +31,50 @@ import org.apache.http.protocol.HttpContext;
  */
 public class TraceRequestInterceptor implements HttpRequestInterceptor {
 
-  private final Tracer tracer;
+  private final TraceHttpRequestInterceptor interceptor;
 
   public TraceRequestInterceptor() {
-    this(Trace.getTracer());
+    this(new TraceHttpRequestInterceptor());
   }
 
-  public TraceRequestInterceptor(Tracer tracer) {
-    this.tracer = tracer;
+  public TraceRequestInterceptor(TraceHttpRequestInterceptor interceptor) {
+    this.interceptor = interceptor;
   }
 
-  public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
-    Labels.Builder labels = Labels.builder();
-    String uri = request.getRequestLine().getUri();
-    TraceInterceptorUtil
-        .annotateIfNotEmpty(labels, HttpLabels.HTTP_METHOD, request.getRequestLine().getMethod());
-    TraceInterceptorUtil.annotateIfNotEmpty(labels, HttpLabels.HTTP_URL, uri);
-
-    TraceInterceptorUtil.annotateIfNotEmpty(labels, HttpLabels.HTTP_CLIENT_PROTOCOL,
-        request.getProtocolVersion().getProtocol());
-    TraceInterceptorUtil
-        .annotateFromHeader(labels, HttpLabels.HTTP_USER_AGENT, request.getFirstHeader(
-            HttpHeaders.USER_AGENT));
-    TraceInterceptorUtil.annotateFromHeader(labels, HttpLabels.REQUEST_SIZE,
-        request.getFirstHeader(HttpHeaders.CONTENT_LENGTH));
-    TraceContext traceContext = tracer.startSpan(uri);
-    tracer.annotateSpan(traceContext, labels.build());
-    request.setHeader(SpanContextFactory.headerKey(),
+  public void process(org.apache.http.HttpRequest request, HttpContext context) throws HttpException, IOException {
+    TraceContext traceContext = interceptor.process(new RequestAdapter(request));
+    request.addHeader(SpanContextFactory.headerKey(),
         SpanContextFactory.toHeader(traceContext.getHandle().getCurrentSpanContext()));
     context.setAttribute(TraceInterceptorUtil.TRACE_CONTEXT_KEY, traceContext);
+  }
+
+  private static class RequestAdapter implements HttpRequest {
+
+    private final org.apache.http.HttpRequest request;
+
+    public RequestAdapter(org.apache.http.HttpRequest request) {
+      this.request = request;
+    }
+
+    public String getMethod() {
+      return request.getRequestLine().getMethod();
+    }
+
+    public URI getURI() {
+      return URI.create(request.getRequestLine().getUri());
+    }
+
+    public String getHeader(String name) {
+      Header header = request.getFirstHeader(name);
+      if (header == null) {
+        return null;
+      } else {
+        return header.getValue();
+      }
+    }
+
+    public String getProtocol() {
+      return request.getRequestLine().getProtocolVersion().getProtocol();
+    }
   }
 }
