@@ -46,6 +46,7 @@
   <modules>
     <module>apache-http</module>
     <module>core-http</module>
+    <module>jax-rs</module>
     <module>jdbc</module>
     <module>mongodb</module>
   </modules>
