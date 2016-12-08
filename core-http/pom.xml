@@ -9,32 +9,17 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>apache-http</artifactId>
-  <name>Google Cloud Trace for Apache HTTP client</name>
-
+  <artifactId>core-http</artifactId>
   <dependencies>
-    <dependency>
-      <groupId>com.google.cloud.trace.instrumentation</groupId>
-      <artifactId>core-http</artifactId>
-      <version>${project.version}</version>
-    </dependency>
     <dependency>
       <groupId>com.google.cloud.trace</groupId>
       <artifactId>core</artifactId>
       <version>${cloud.trace.sdk.version}</version>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>com.google.cloud.trace</groupId>
       <artifactId>service</artifactId>
       <version>${cloud.trace.sdk.version}</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpclient</artifactId>
-      <version>4.5.2</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -52,12 +37,6 @@
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
       <version>0.30</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>2.2.22</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
