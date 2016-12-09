@@ -24,7 +24,6 @@ import com.google.cloud.trace.core.TraceContext;
 import com.google.common.collect.ImmutableMap;
 import java.net.URI;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,7 +60,7 @@ public class TraceHttpRequestInterceptorTest {
 
     assertThat(tracer.startSpanEvents).hasSize(1);
     StartSpanEvent startEvent = tracer.startSpanEvents.get(0);
-    assertThat(startEvent.getName()).isEqualTo("http://example.com/");
+    assertThat(startEvent.getName()).isEqualTo("/");
     assertThat(traceContext).isEqualTo(startEvent.getTraceContext());
 
     assertThat(tracer.annotateEvents).hasSize(1);
@@ -79,7 +78,7 @@ public class TraceHttpRequestInterceptorTest {
 
     assertThat(tracer.startSpanEvents).hasSize(1);
     StartSpanEvent startEvent = tracer.startSpanEvents.get(0);
-    assertThat(startEvent.getName()).isEqualTo("http://example.com/foo/bar");
+    assertThat(startEvent.getName()).isEqualTo("/foo/bar");
     assertThat(traceContext).isEqualTo(startEvent.getTraceContext());
 
     assertThat(tracer.annotateEvents).hasSize(1);
