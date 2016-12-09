@@ -42,19 +42,18 @@ public class TraceHttpRequestInterceptor {
    */
   public TraceContext process(HttpRequest request) {
     Labels.Builder labels = Labels.builder();
-    String uri = request.getURI().toString();
     TraceInterceptorUtil
         .annotateIfNotEmpty(labels, HttpLabels.HTTP_METHOD, request.getURI().toString());
     labels.add(HttpLabels.HTTP_METHOD, request.getMethod());
-    TraceInterceptorUtil.annotateIfNotEmpty(labels, HttpLabels.HTTP_URL, uri);
-
+    TraceInterceptorUtil
+        .annotateIfNotEmpty(labels, HttpLabels.HTTP_URL, request.getURI().toString());
     TraceInterceptorUtil.annotateIfNotEmpty(labels, HttpLabels.HTTP_CLIENT_PROTOCOL,
         request.getProtocol());
-    TraceInterceptorUtil
-        .annotateIfNotEmpty(labels, HttpLabels.HTTP_USER_AGENT, request.getHeader(HttpHeaders.USER_AGENT));
+    TraceInterceptorUtil.annotateIfNotEmpty(labels, HttpLabels.HTTP_USER_AGENT,
+        request.getHeader(HttpHeaders.USER_AGENT));
     TraceInterceptorUtil.annotateIfNotEmpty(labels, HttpLabels.REQUEST_SIZE,
         request.getHeader(HttpHeaders.CONTENT_LENGTH));
-    TraceContext traceContext = tracer.startSpan(uri);
+    TraceContext traceContext = tracer.startSpan(request.getURI().getPath());
     tracer.annotateSpan(traceContext, labels.build());
     return traceContext;
   }
