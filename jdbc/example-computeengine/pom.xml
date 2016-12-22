@@ -15,6 +15,9 @@
   <name>Google Cloud Trace for JDBC - example for Google Compute Engine</name>
   
   <properties>
+    <!-- Don't include this in the upload to Maven central. -->
+    <maven.deploy.skip>true</maven.deploy.skip>
+
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>

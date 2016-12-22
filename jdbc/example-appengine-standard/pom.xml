@@ -16,6 +16,9 @@
   <name>Google Cloud Trace for JDBC - example for Google App Engine Standard Environment</name>
   
   <properties>
+    <!-- Don't include this in the upload to Maven central. -->
+    <maven.deploy.skip>true</maven.deploy.skip>
+
     <!-- Google App Engine Standard Environment doesn't support 1.8 yet. -->
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
