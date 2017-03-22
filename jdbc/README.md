@@ -74,7 +74,7 @@ Maven dependency to your application's `pom.xml` file:
     <dependency>
       <groupId>com.google.cloud.trace.jdbc</groupId>
       <artifactId>driver-appengine-standard</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.1.0</version>
     </dependency>
 ```
 
@@ -112,7 +112,7 @@ application's `pom.xml` file:
     <dependency>
       <groupId>com.google.cloud.trace.jdbc</groupId>
       <artifactId>driver</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.1.0</version>
     </dependency>
 ```
 
