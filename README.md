@@ -9,5 +9,5 @@ latency data from applications.
 
 [travis-image]: https://travis-ci.org/GoogleCloudPlatform/cloud-trace-java-instrumentation.svg?branch=master
 [travis-url]: https://travis-ci.org/GoogleCloudPlatform/cloud-trace-java-instrumentation
-[maven-image]: https://maven-badges.herokuapp.com/maven-central/com.google.cloud.trace/instrumentation/badge.svg
-[maven-url]: https://maven-badges.herokuapp.com/maven-central/com.google.cloud.trace/instrumentation
+[maven-image]: https://maven-badges.herokuapp.com/maven-central/com.google.cloud.trace.instrumentation/root/badge.svg
+[maven-url]: https://maven-badges.herokuapp.com/maven-central/com.google.cloud.trace.instrumentation/root

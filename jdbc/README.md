@@ -18,7 +18,7 @@ Console](src/site/resources/images/example-trace-details.png)
 
 ## Supported platforms
 
-To use *Google Cloud Trace for JDBC*, you must have an Java application that
+To use *Google Cloud Trace for JDBC*, you must have a Java application that
 you'd like to trace. The application can be on [Google Cloud
 Platform](https://cloud.google.com/), on-premise, or another cloud platform.
 
@@ -74,7 +74,7 @@ Maven dependency to your application's `pom.xml` file:
     <dependency>
       <groupId>com.google.cloud.trace.jdbc</groupId>
       <artifactId>driver-appengine-standard</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.1.0</version>
     </dependency>
 ```
 
@@ -112,7 +112,7 @@ application's `pom.xml` file:
     <dependency>
       <groupId>com.google.cloud.trace.jdbc</groupId>
       <artifactId>driver</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>0.1.0</version>
     </dependency>
 ```
 
