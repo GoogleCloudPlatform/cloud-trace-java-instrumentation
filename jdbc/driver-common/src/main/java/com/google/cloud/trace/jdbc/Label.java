@@ -24,25 +24,25 @@ enum Label {
    * Span annotations labeled with {@link #DATABASE_URL} (key {@value #DATABASE_URL}) contain the
    * JDBC database URL that is used for connecting to the database.
    */
-  DATABASE_URL("trace.cloud.google.com/jdbc/url"),
+  DATABASE_URL("g.co/jdbc/url"),
 
   /**
    * Span annotations labeled with {@link #SQL_TEXT} (key {@value #SQL_TEXT}) contain the SQL
    * statement that is sent to the database for execution.
    */
-  SQL_TEXT("trace.cloud.google.com/jdbc/sql"),
+  SQL_TEXT("g.co/jdbc/sql"),
 
   /**
    * Span annotations labeled with {@link #ERROR_NAME} (key {@value #ERROR_NAME}) contain the error
    * name.
    */
-  ERROR_NAME("trace.cloud.google.com/error/name"),
+  ERROR_NAME("/error/name"),
 
   /**
    * Span annotations labeled with {@link #ERROR_MESSAGE} (key {@value #ERROR_MESSAGE}) contain the
    * error message.
    */
-  ERROR_MESSAGE("trace.cloud.google.com/error/message");
+  ERROR_MESSAGE("/error/message");
 
   private final String key;
 
