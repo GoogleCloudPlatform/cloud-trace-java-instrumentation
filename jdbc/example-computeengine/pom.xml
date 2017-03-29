@@ -33,36 +33,9 @@
       <version>${cloud.trace.sdk.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.google.cloud.trace.v1</groupId>
-      <artifactId>grpc-consumer</artifactId>
-      <version>${cloud.trace.sdk.version}</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
       <groupId>com.google.cloud.trace</groupId>
-      <artifactId>implementation</artifactId>
+      <artifactId>trace-grpc-api-service</artifactId>
       <version>${cloud.trace.sdk.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.cloud.trace</groupId>
-      <artifactId>java-timestamp</artifactId>
-      <version>${cloud.trace.sdk.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.cloud.trace</groupId>
-      <artifactId>sink</artifactId>
-      <version>${cloud.trace.sdk.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.cloud.trace.v1</groupId>
-      <artifactId>sink</artifactId>
-      <version>${cloud.trace.sdk.version}</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>com.google.auth</groupId>
-      <artifactId>google-auth-library-credentials</artifactId>
-      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.auth</groupId>
@@ -111,6 +84,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
         <configuration>
           <mainClass>com.google.cloud.trace.jdbc.example.gce.Main</mainClass>
           <arguments>
