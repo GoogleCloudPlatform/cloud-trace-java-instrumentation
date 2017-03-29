@@ -18,6 +18,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Optional;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Statement;
 
@@ -53,7 +54,12 @@ final class StatementInvocationHandler implements InvocationHandler {
 
     if (!method.getName().startsWith("execute")) {
       // Intentionally not tracing this call as no statement is executed.
-      return method.invoke(statement, args);
+      try {
+        return method.invoke(statement, args);
+      } catch (InvocationTargetException e) {
+        // Rethrow the exception from the underlying method.
+        throw e.getCause();
+      }
     }
 
     Optional<String> sql;
@@ -70,7 +76,12 @@ final class StatementInvocationHandler implements InvocationHandler {
         span.annotate(Label.SQL_TEXT, traceOptions.sqlScrubber().apply(sql.get()));
       }
 
-      return method.invoke(statement, args);
+      try {
+        return method.invoke(statement, args);
+      } catch (InvocationTargetException e) {
+        // Rethrow the exception from the underlying method.
+        throw e.getCause();
+      }
     }
   }
 }

@@ -15,6 +15,7 @@
 package com.google.cloud.trace.jdbc;
 
 import static com.google.common.truth.Truth.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -22,12 +23,14 @@ import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import static org.mockito.Mockito.doThrow;
 
 /** Unit tests for {@link ConnectionInvocationHandler}. */
 @RunWith(JUnit4.class)
@@ -55,6 +58,22 @@ public class ConnectionInvocationHandlerTest {
         mockProxy, Connection.class.getDeclaredMethod("close"), new Object[0]);
 
     verify(mockRealConnection).close();
+  }
+
+  @Test
+  public void invoke_commit_fails() throws Throwable {
+    Exception expectedException = new SQLException();
+    doThrow(expectedException).when(mockRealConnection).commit();
+
+    try {
+      connectionInvocationHandler.invoke(
+              mockProxy, Connection.class.getDeclaredMethod("commit"), new Object[0]);
+      fail("expected SQLException");
+    } catch (Exception actualException) {
+      assertThat(actualException).isSameAs(expectedException);
+    }
+
+    verify(mockRealConnection).commit();
   }
 
   @Test
