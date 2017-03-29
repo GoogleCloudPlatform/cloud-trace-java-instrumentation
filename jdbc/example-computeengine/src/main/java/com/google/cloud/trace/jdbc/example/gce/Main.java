@@ -29,6 +29,7 @@ import com.google.cloud.trace.core.TimestampFactory;
 import com.google.cloud.trace.core.SpanContextFactory;
 import com.google.cloud.trace.core.TraceContext;
 import com.google.cloud.trace.grpc.v1.GrpcTraceConsumer;
+import com.google.cloud.trace.service.TraceGrpcApiService;
 import com.google.cloud.trace.sink.TraceSink;
 import com.google.cloud.trace.v1.TraceSinkV1;
 import com.google.cloud.trace.v1.consumer.TraceConsumer;
@@ -61,7 +62,7 @@ public class Main {
         args.length == 1, "Expected exactly one command line argument, the cloud project ID");
 
     String projectId = args[0];
-    Tracer tracer = createTracer(projectId);
+    Tracer tracer = TraceGrpcApiService.builder().setProjectId(projectId).build().getTracer();
 
     // Make the Tracer available to Stackdriver Trace for JDBC.
     // TODO: Replace this with the upcoming mechanism in the Cloud Trace for Java SDK.
@@ -76,34 +77,6 @@ public class Main {
         "Hint: https://console.cloud.google.com/traces/overview?project=" + projectId);
 
     tracer.endSpan(traceContext);
-  }
-
-  /**
-   * Creates a {@link Tracer}.
-   *
-   * <p>Adapted from <a
-   * href="https://github.com/GoogleCloudPlatform/cloud-trace-java/blob/master/samples/managed-grpc/src/main/java/com/google/cloud/trace/samples/grpc/managed/ManagedGrpc.java">Cloud
-   * Trace SDK's ManagedGrpc example</a>.
-   */
-  private static Tracer createTracer(String projectId) throws IOException {
-    checkNotNull(projectId);
-
-    // Create the trace sink.
-    TraceProducer traceProducer = new TraceProducer();
-    TraceConsumer traceConsumer = GrpcTraceConsumer.create(
-        "cloudtrace.googleapis.com", GoogleCredentials.getApplicationDefault());
-    TraceSink traceSink = new TraceSinkV1(projectId, traceProducer, traceConsumer);
-
-    // Create the tracer.
-    SpanContextFactory spanContextFactory =
-        new SpanContextFactory(new ConstantTraceOptionsFactory(true, false));
-    TimestampFactory timestampFactory = new JavaTimestampFactory();
-    SpanContextHandler spanContextHandler =
-        new GrpcSpanContextHandler(spanContextFactory.initialContext());
-    Tracer tracer = new SpanContextHandlerTracer(
-        traceSink, spanContextHandler, spanContextFactory, timestampFactory);
-
-    return tracer;
   }
 
   // Not using a connection pool and otherwise doing weird stuff just to make a point.
