@@ -18,7 +18,7 @@
     <maven.compiler.target>1.7</maven.compiler.target>
 
     <!-- App Engine Trace API is available in 1.9.44+. -->
-    <appengine.target.version>1.9.46</appengine.target.version>
+    <appengine.target.version>1.9.50</appengine.target.version>
   </properties>
   
   <dependencies>
