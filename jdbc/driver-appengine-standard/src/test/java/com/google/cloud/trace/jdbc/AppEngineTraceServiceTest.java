@@ -56,7 +56,7 @@ public class AppEngineTraceServiceTest {
 
     InOrder inOrder = inOrder(mockTraceService, mockSpan);
     inOrder.verify(mockTraceService).startSpan("JDBC.Driver#connect");
-    inOrder.verify(mockSpan).setLabel("trace.cloud.google.com/jdbc/url", "jdbc:mockdriver");
+    inOrder.verify(mockSpan).setLabel("g.co/jdbc/url", "jdbc:mockdriver");
     inOrder.verify(mockSpan).close();
     verifyNoMoreInteractions(mockTraceService, mockSpan); // No annotation for SQL_TEXT created.
   }

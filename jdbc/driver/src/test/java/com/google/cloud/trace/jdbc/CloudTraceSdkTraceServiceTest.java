@@ -63,6 +63,6 @@ public class CloudTraceSdkTraceServiceTest {
 
     assertThat(labels.getValue().getLabels())
         .containsExactly(new com.google.cloud.trace.core.Label(
-            "trace.cloud.google.com/jdbc/url", "jdbc:mockdriver"));
+            "g.co/jdbc/url", "jdbc:mockdriver"));
   }
 }
