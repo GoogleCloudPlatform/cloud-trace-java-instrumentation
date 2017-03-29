@@ -18,6 +18,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Optional;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.Statement;
@@ -57,7 +58,14 @@ final class ConnectionInvocationHandler implements InvocationHandler {
       sql = Optional.absent();
     }
 
-    Object o = method.invoke(conn, args);
+    Object o;
+    try {
+      o = method.invoke(conn, args);
+    } catch (InvocationTargetException e) {
+      // Rethrow the exception from the underlying method.
+      throw e.getCause();
+    }
+
     if (o instanceof Statement) {
       Statement stmt = (Statement) o;
       o =

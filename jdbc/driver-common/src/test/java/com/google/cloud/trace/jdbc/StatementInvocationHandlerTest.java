@@ -16,13 +16,13 @@ package com.google.cloud.trace.jdbc;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import com.google.common.base.Optional;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -72,6 +72,26 @@ public class StatementInvocationHandlerTest {
 
     statementInvocationHandler.invoke(
         mockProxy, Statement.class.getDeclaredMethod("close"), new Object[0]);
+
+    verify(mockRealStatement).close();
+    verifyNoMoreInteractions(mockTraceSpan); // No trace span created.
+  }
+
+  @Test
+  public void invoke_Statement_close_fails() throws Throwable {
+    StatementInvocationHandler statementInvocationHandler =
+        new StatementInvocationHandler(
+            mockRealStatement, TRACE_OPTIONS, mockTraceService, Optional.<String>absent());
+    Exception expectedException = new SQLException();
+    doThrow(expectedException).when(mockRealStatement).close();
+
+    try {
+      statementInvocationHandler.invoke(
+              mockProxy, Statement.class.getDeclaredMethod("close"), new Object[0]);
+      fail("expected SQLException");
+    } catch (Exception actualException) {
+      assertThat(actualException).isSameAs(expectedException);
+    }
 
     verify(mockRealStatement).close();
     verifyNoMoreInteractions(mockTraceSpan); // No trace span created.
@@ -137,17 +157,17 @@ public class StatementInvocationHandlerTest {
   public void invoke_fails() throws Throwable {
     StatementInvocationHandler statementInvocationHandler =
         new StatementInvocationHandler(
-            mockRealStatement, TRACE_OPTIONS, mockTraceService, Optional.<String>absent());
-    when(mockRealStatement.execute("some sql text")).thenThrow(new SQLException());
+                    mockRealStatement, TRACE_OPTIONS, mockTraceService, Optional.<String>absent());
+    Exception expectedException = new SQLException();
+    when(mockRealStatement.execute("some sql text")).thenThrow(expectedException);
 
     try {
       statementInvocationHandler.invoke(
-          mockProxy,
-          Statement.class.getDeclaredMethod("execute", String.class),
-          new Object[] {"some sql text"});
-      fail("expected InvocationTargetException");
-    } catch (InvocationTargetException expected) {
-      assertThat(expected.getTargetException() instanceof SQLException).isTrue();
+              mockProxy,
+              Statement.class.getDeclaredMethod("execute", String.class),
+              new Object[]{"some sql text"});
+    } catch (Exception actualException) {
+      assertThat(actualException).isSameAs(expectedException);
     }
 
     InOrder inOrder = inOrder(mockTraceService, mockTraceSpan, mockRealStatement);
