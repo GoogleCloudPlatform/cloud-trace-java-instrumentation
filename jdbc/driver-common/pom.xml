@@ -5,7 +5,7 @@
   <parent>
     <groupId>com.google.cloud.trace.instrumentation.jdbc</groupId>
     <artifactId>root</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.2-SNAPSHOT</version>
   </parent>
   
   <artifactId>driver-common</artifactId>
