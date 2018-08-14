@@ -3,6 +3,8 @@
 [![Build Status][travis-image]][travis-url] [![Maven
 Central][maven-image]][maven-url]
 
+## Google is no longer actively updating this repository, and we recommend that developers use OpenCensus to send data to Stackdriver Trace. These libraries will continue to work for existing projects.
+
 *Google Cloud Trace for JDBC* is a custom
 [JDBC](http://www.oracle.com/technetwork/java/overview-141217.html) driver which
 intercepts calls to the actual JDBC driver (e.g. [Cloud
